@@ -12,13 +12,15 @@ public class Player : MonoBehaviour
     public float groundCheckRadius = 0.2f;
     public LayerMask groundLayer;
     
-
-
     private Rigidbody2D rb;
     private bool isGrounded;
+    private Animator animator;
+
+
     void Start()
     {
         rb = GetComponent<Rigidbody2D>();
+        animator = GetComponent<Animator>();
         
     }
 
@@ -40,5 +42,28 @@ public class Player : MonoBehaviour
         {
             isGrounded = Physics2D.OverlapCircle(groundCheck.position, groundCheckRadius, groundLayer);
         }
+        setAnimation(moveHorizontal);
     }
+    private void setAnimation(float moveHorizontal){
+        if(isGrounded){
+            if(moveHorizontal == 0){
+                animator.Play("Player_idle");
+            }
+            else{
+                animator.Play("Player_run");
+            }
+
+        }
+        else{
+            if(rb.velocity.y > 0){
+                animator.Play("Player_jump");
+            }
+            else{
+                animator.Play("Player_fall");
+            }
+
+
+        }
+    }
+
 }
