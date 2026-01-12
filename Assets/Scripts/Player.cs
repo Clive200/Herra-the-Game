@@ -22,6 +22,8 @@ public class Player : MonoBehaviour
 
     public int extraJumpsValue = 1;
     private int extraJumps;
+    
+    private float moveInput;
 
 
     void Start()
@@ -35,6 +37,18 @@ public class Player : MonoBehaviour
 
     void Update()
     {
+    
+        moveInput = 0f;
+        
+        if (Input.GetKey(KeyCode.A) || Input.GetKey(KeyCode.LeftArrow))
+        {
+            moveInput = -1f;
+        }
+        if (Input.GetKey(KeyCode.D) || Input.GetKey(KeyCode.RightArrow))
+        {
+            moveInput = 1f;
+        }
+        
         if (isGrounded && !wasGrounded)
         {
             extraJumps = extraJumpsValue;
@@ -60,8 +74,10 @@ public class Player : MonoBehaviour
     
     void FixedUpdate()
     {
-        float moveHorizontal = Input.GetAxis("Horizontal");
-        rb.velocity = new Vector2(moveHorizontal * speed, rb.velocity.y);
+        if (rb != null)
+        {
+            rb.velocity = new Vector2(moveInput * speed, rb.velocity.y);
+        }
         
         
         if (groundCheck != null)
@@ -69,7 +85,7 @@ public class Player : MonoBehaviour
             wasGrounded = isGrounded;
             isGrounded = Physics2D.OverlapCircle(groundCheck.position, groundCheckRadius, groundLayer);
         }
-        setAnimation(moveHorizontal);
+        setAnimation(moveInput);
     }
     private void setAnimation(float moveHorizontal){
         if(isGrounded){
@@ -102,7 +118,6 @@ public class Player : MonoBehaviour
                 Die();
             }
         }
-
     }
 
     private IEnumerator BlinkRed(){
