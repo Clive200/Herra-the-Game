@@ -14,22 +14,44 @@ public class Player : MonoBehaviour
     
     private Rigidbody2D rb;
     private bool isGrounded;
+    private bool wasGrounded;
     private Animator animator;
+
+    public int extraJumpsValue = 1;
+    private int extraJumps;
 
 
     void Start()
     {
         rb = GetComponent<Rigidbody2D>();
         animator = GetComponent<Animator>();
-        
+        extraJumps = extraJumpsValue;
     }
 
 
     void Update()
     {
-        if(Input.GetKeyDown(KeyCode.Space) && isGrounded)
+        // Reset extra jumps when landing (when transitioning from air to ground)
+        if (isGrounded && !wasGrounded)
         {
-            rb.velocity = new Vector2(rb.velocity.x, jumpForce * 2);
+            extraJumps = extraJumpsValue;
+        }
+        
+        if(Input.GetKeyDown(KeyCode.Space))
+        {
+            if (isGrounded)
+            { 
+                rb.velocity = new Vector2(rb.velocity.x, jumpForce * 2);
+            }
+            else
+            {
+                if(extraJumps > 0)
+                {
+                    rb.velocity = new Vector2(rb.velocity.x, jumpForce * 2);
+                    extraJumps--;
+                }
+            }
+           
         }
     }
     
@@ -38,8 +60,10 @@ public class Player : MonoBehaviour
         float moveHorizontal = Input.GetAxis("Horizontal");
         rb.velocity = new Vector2(moveHorizontal * speed, rb.velocity.y);
         
+        
         if (groundCheck != null)
         {
+            wasGrounded = isGrounded;
             isGrounded = Physics2D.OverlapCircle(groundCheck.position, groundCheckRadius, groundLayer);
         }
         setAnimation(moveHorizontal);
