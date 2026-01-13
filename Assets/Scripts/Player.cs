@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class Player : MonoBehaviour
 
@@ -12,6 +13,7 @@ public class Player : MonoBehaviour
     public Transform groundCheck;
     public float groundCheckRadius = 0.2f;
     public LayerMask groundLayer;
+    public Image healthImage;
     
     private Rigidbody2D rb;
     private bool isGrounded;
@@ -70,9 +72,11 @@ public class Player : MonoBehaviour
             }
            
         }
+
+        healthImage.fillAmount = (float)health / 100f;
     }
     
-    void FixedUpdate()
+    private void FixedUpdate()
     {
         if (rb != null)
         {

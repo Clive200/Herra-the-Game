@@ -9,25 +9,29 @@ public class Enemy : MonoBehaviour
 
     private int i;
     private SpriteRenderer spriteRenderer;
+    private Rigidbody2D rb;
 
     void Start()
     {
-        spriteRenderer = GetComponent<SpriteRenderer>(); 
+        spriteRenderer = GetComponent<SpriteRenderer>();
+        rb = GetComponent<Rigidbody2D>();
+        
+        if(rb != null){
+            rb.isKinematic = true;
+        }
+        
         i = 0;
         if(points != null && points.Length > 0){
-       
             i = 0;
         }
     }
 
     void Update()
     {
-    
         if(points == null || points.Length == 0) return;
         
         if(i < 0 || i >= points.Length) i = 0;
         
-      
         if(points[i] == null) return;
    
         float distance = Vector2.Distance(transform.position, points[i].position);
@@ -38,8 +42,12 @@ public class Enemy : MonoBehaviour
             }
         }
         
-        
+
         transform.position = Vector2.MoveTowards(transform.position, points[i].position, speed * Time.deltaTime);
+        
+        if(rb != null){
+            rb.MovePosition(transform.position);
+        }
         
         if(points[i] != null){
             spriteRenderer.flipX = (transform.position.x - points[i].position.x) < 0f;
